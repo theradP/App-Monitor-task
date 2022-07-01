@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}
+	Dashboard
+{% endblock %}
+
+{% block content %}
+
+	{% if messages %}
+
+	    {% for message in messages %}
+
+		<!--Panel-->
+		<div class="card border-success mb-3">
+		    <div class="card-header text-danger">
+		        <p class="card-title">{{ message }}</p>
+		    </div>
+		</div>
+		<!--/.Panel-->
+	    
+	    {% endfor %}
+
+	{% endif %}
+
+	<h1 class="mt-5 text-center">Welcome {{ request.user }}</h1>
+
+    <style>
+table, th, td {
+  border:1px solid black;margin-left:auto;margin-right:auto;
+}
+caption {
+  display: table-caption;
+  text-align: center;
+}
+</style>
+    <table class="mt-5 text-center">
+    <caption style="caption-side:top">App List</caption>
+    <th>Icon</th>
+    <th>Name</th>
+    <th>Package ID</th>
+    {% for app in apps %}
+        <tr>
+        <td>{% if 'https' in app.app_img.url %}
+            <img src="{{ app.app_img }}">
+            {% else %}
+            <img src="/media/{{ app.app_img }}">
+            {% endif %}
+        </td>
+        <td>{{ app.app_name }}</td>
+        <td>{{ app.app_id }}</td>
+        </tr>
+
+        <br>
+    {% endfor %}
+    </table>
+
+
+{% endblock content %}

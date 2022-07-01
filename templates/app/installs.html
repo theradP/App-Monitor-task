@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}
+	Installs
+{% endblock %}
+
+{% block content %}
+	
+	<div class="text-left mt-5 container">
+		<h1>Installs</h1>
+	</div>
+    <div class="row">
+  <div class="col-md-4">
+      <div class="list-group list-group-flush mx-3 mt-4">
+          <hr/>
+      <form method="POST" href="">
+            {% csrf_token %}
+          From:<input type="date" name="date__gte" value="2013-01-08" /><br>
+          To:<input type="date" name="date__lte"value="2013-01-08" /><br>
+          Carrier: <select id="selectcarrier" name="carrier" col=10>
+          <option selected disabled="true">Select Carrier</option>
+          {% for carrier in carriers %}
+              <option value="{{ carrier }}">{{ carrier|safe }}</option>
+          {% endfor %}
+      </select>
+          <input type="submit" value="Search"/>
+      </form>
+
+          <hr/>
+
+      </div>
+  </div>
+  <div class="col-md-8">
+  {% if installs %}
+    <div id="container" style="width: 75%;">
+
+    <table id="datatable">
+    <caption style="caption-side:top" class="text-md-center">Daily Installs Vs Date</caption>
+    <thead><tr>
+        <th>Date</th>
+    <th>Daily Installs</th>
+    </tr></thead>
+    <tbody>
+    {% for install in installs %}
+        <tr >
+        <th>{{ install.date }}</th>
+        <td align="center">{{ install.daily_installs }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+
+    </table>
+   </div>
+  {% endif %}
+  </div>
+</div>
+
+{% endblock %}
+{% block script %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+    <script>
+        $(document).ready(function () {
+            $('#selectcarrier').select2({
+                dropdownAutoWidth: true,
+                width: 'auto'
+        })
+        });
+    </script>
+
+   <script type="text/javascript" src="js/HTMLtable2chart/graficarBarras.js"></script>
+    <script type="text/javascript" src="js/HTMLtable2chart/tabla2array.js"></script>
+    <script type="text/javascript">
+    Highcharts.chart('container', {
+    data: {
+        table: 'datatable'
+    },
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Data extracted from a HTML table in the page'
+    },
+    yAxis: {
+        allowDecimals: false,
+        title: {
+            text: 'Units'
+        }
+    },
+    tooltip: {
+        formatter: function () {
+            return '<b>' + this.series.name + '</b><br/>' +
+                this.point.y + ' ' + this.point.name.toLowerCase();
+        }
+    }
+});
+</script>
+
+{% endblock %}
