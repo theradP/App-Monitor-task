@@ -68,7 +68,7 @@ class InstallView(APIView):
                     'daily_installs': data.filter(date=date).aggregate(Sum('daily_device_installs'))['daily_device_installs__sum']
                 }
             )
-
+        print(context['installs'])
         return render(request, 'app/installs.html', context)
 
 
