@@ -23,6 +23,6 @@ app.conf.beat_schedule = {
     'update_install_data': {
         # Task Name (Name Specified in Decorator)
         'task': 'profiles.update_installs',
-        'schedule': crontab(minute='*/10'),
+        'schedule': crontab(hour='*/48'),
     },
 }
