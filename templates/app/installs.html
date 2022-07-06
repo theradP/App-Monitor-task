@@ -14,40 +14,36 @@
   <div class="col-md-4">
       <div class="list-group list-group-flush mx-3 mt-4">
           <hr/>
-      <form method="POST" href="">
-            {% csrf_token %}
-          From: <input type="date" name="date__gte" value="2013-01-08" />
+      <form method="POST" href="" id="dateform">
+          {% csrf_token %}
+          From: <input type="date" name="date__gte" value="2022-05-01" />
           <br>
-          To: <input type="date" name="date__lte"value="2013-01-08" />
+          To: <input type="date" name="date__lte" value="2022-05-15" />
           <br>
-          Carrier: <select id="selectcarrier" name="carrier" col=10>
-          <option selected disabled="true">Select Carrier</option>
-          {% for carrier in carriers %}
-              <option value="{{ carrier }}">{{ carrier|safe }}</option>
-          {% endfor %}
-      </select>
-          <br>
-          <input type="submit" value="Search"/>
+          <input type="submit" value="Search">
       </form>
+
 
           <hr/>
 
       </div>
   </div>
   <div class="col-md-8">
-  {% if installs %}
-    <div id="container" style="width: 75%;">
 
+    <div id="container" style="width: 75%;">
+        {% if installs %}
     <table id="datatable" class="table table-bordered table-striped">
-    <caption style="caption-side:top" class="text-md-center">Daily Installs Vs Date</caption>
+    <caption style="caption-side:top" class="text-md-center">Daily Carrier Installs Vs Date</caption>
     <thead><tr>
         <th>Date</th>
+    <th>Carriers</th>
     <th>Daily Installs</th>
     </tr></thead>
     <tbody>
     {% for install in installs %}
         <tr >
         <th>{{ install.date }}</th>
+        <td align="center">{{ install.carrier }}</td>
         <td align="center">{{ install.daily_installs }}</td>
         </tr>
     {% endfor %}
@@ -69,6 +65,9 @@
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+    <script type="text/javascript">
+</script>
+
     <script>
         $(document).ready(function () {
             $('#selectcarrier').select2({

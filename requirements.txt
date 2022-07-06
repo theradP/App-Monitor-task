@@ -14,14 +14,14 @@ distlib==0.3.4
 django-allauth==0.51.0
 django-bootstrap4==1.1.1
 django-celery-beat==2.3.0
-django-elasticsearch-dsl==7.2.2
+django-elasticsearch-dsl>=6.0.0,<7.0.0
 django-elasticsearch-dsl-drf==0.22.4
 django-nine==0.2.5
 django-timezone-field==5.0
 django-widget-tweaks==1.4.12
 djangorestframework==3.13.1
-elasticsearch==7.17.4
-elasticsearch-dsl==7.4.0
+elasticsearch>=6.0.0,<7.0.0
+elasticsearch-dsl>=6.0.0,<7.0.0
 filelock==3.7.1
 idna==3.3
 kombu==5.2.4
@@ -54,3 +54,4 @@ wcwidth==0.2.5
 wincertstore==0.2
 Django>=3.0,<4.0
 psycopg2>=2.8
+social-auth-app-django==5.0.0

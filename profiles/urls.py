@@ -1,7 +1,6 @@
-from django.urls import path, re_path
-
+from django.urls import path
 from .views import (
-	signup, rating_view, revenue_view, InstallView, AdminView, add_app, role_update
+	signup, rating_view, revenue_view, InstallView, AdminView, add_app, role_update, CarrierSearch
 )
 
 app_name = 'profiles'
@@ -14,4 +13,5 @@ urlpatterns = [
 	path('admin_setting/', AdminView.as_view(), name='profile-admin'),
 	path('user_list/', role_update, name='profile-role'),
 	path('add_app/', add_app, name='add_app'),
+	path('search/<str:query>', CarrierSearch.as_view(), name='search_install'),
 ]

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from profiles.models import App
@@ -14,6 +14,11 @@ def signup_view(request):
 		form = SignUpForm(request.POST)
 		if form.is_valid():
 			user = form.save()
+			username = form.cleaned_data.get('username')
+			password = form.cleaned_data.get('password1')
+			user.set_password(password)
+			user.username = username
+			user.save()
 			login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 			return redirect('users:dashboard')
 		else:

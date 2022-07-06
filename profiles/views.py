@@ -6,6 +6,9 @@ from .forms import SignUpForm, UserRoleForm, AppForm
 from .models import User, InstallDetails
 from rest_framework.views import APIView
 import pandas as pd
+from .serializers import InstallDocSerializer
+from .documents import InstallDocument
+from django.http import JsonResponse
 
 
 def signup(request):
@@ -49,25 +52,28 @@ def revenue_view(request):
 
 
 class InstallView(APIView):
-    carriers = [x[0] for x in InstallDetails.objects.all().values_list('carrier').distinct()]
 
     def get(self, request):
-        return render(request, 'app/installs.html', {'carriers': self.carriers})
+        return render(request, 'app/installs.html')
 
     def post(self, request):
         start_date = datetime.strptime(request.POST.get('date__gte'), "%Y-%m-%d")
         end_date = datetime.strptime(request.POST.get('date__lte'), "%Y-%m-%d")
-        carrier = request.POST.get('carrier')
-        data = InstallDetails.objects.filter(carrier=carrier, date__lte=end_date, date__gte=start_date)
+        carrier_list = InstallDetails.objects.values_list('carrier').distinct()
+        data = InstallDetails.objects.filter(date__lte=end_date, date__gte=start_date)
         date_list = [str(x.date()) for x in pd.date_range(start_date, end_date-timedelta(days=1), freq='d').tolist()]
-        context = {"installs": [], 'carriers': self.carriers}
-        for date in date_list:
-            context['installs'].append(
-                {
-                    'date': date,
-                    'daily_installs': data.filter(date=date).aggregate(Sum('daily_device_installs'))['daily_device_installs__sum']
-                }
-            )
+        context = {"installs": []}
+        for carrier in carrier_list:
+            for date in date_list:
+                context['installs'].append(
+                    {
+                        'date': date,
+                        'carrier': carrier,
+                        'daily_installs': data.filter(
+                            carrier=carrier, date=date
+                        ).aggregate(Sum('daily_device_installs'))['daily_device_installs__sum']
+                    }
+                )
         print(context['installs'])
         return render(request, 'app/installs.html', context)
 
@@ -94,4 +100,9 @@ def add_app(request):
     })
 
 
-
+class CarrierSearch(APIView):
+    def get(self, request, query):
+        carriers = InstallDocument.search().filter('term', carrier=query)
+        response = InstallDocSerializer(carriers, many=True)
+        return JsonResponse({"carriers": response.data})
+        # return render(request, 'app/installs.html', {"carriers": response.data})

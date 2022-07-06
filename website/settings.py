@@ -34,27 +34,29 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.auth',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sites',
     'django.contrib.staticfiles',
     'users',
     'profiles',
     'rest_framework',
-    'django.contrib.sites',
-    # 'django_elasticsearch_dsl',
-    # 'django_elasticsearch_dsl_drf',
+    'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
+    'django_celery_beat',
+    'social_django',
+
 ]
+
 AUTH_USER_MODEL = 'profiles.User'
 
-# ELASTICSEARCH_DSL = {
-#     'default': {
-#         'hosts': 'https://localhost:9200',
-#         # 'user': 'elastic',
-#         # 'password': 't7ZOdd0ukuwXJULA96c7'
-#     },
-# }
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'elasticsearch',
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -79,6 +81,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -93,19 +97,21 @@ WSGI_APPLICATION = 'website.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
+        # 'NAME': "postgres",
         'NAME': os.environ.get('POSTGRES_NAME'),
+        # 'USER': "postgres",
         'USER': os.environ.get('POSTGRES_USER'),
+        # 'PASSWORD': "postgres",
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        # 'HOST': 'localhost',
         'HOST': 'db',
         'PORT': 5432,
     }
 }
 
 AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
-
-    # `allauth` specific authentication methods, such as login by e-mail
+    'social_core.backends.google.GoogleOAuth2',
 ]
 
 # Password validation
@@ -172,3 +178,22 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = "Asia/Kolkata"
+
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '1050070869262-l0dv9toos6q1ff8c3g2t8tla4obd33gj.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.social_auth.associate_by_email',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)

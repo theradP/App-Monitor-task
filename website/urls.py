@@ -9,11 +9,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('users.urls', namespace='users')),
     path('profile/', include('profiles.urls', namespace='profiles')),
-    # path('accounts/', include('allauth.urls')),
+    path('', include('social_django.urls', namespace='social'))
 ]
 
 urlpatterns += [
-    path('login/', LoginView.as_view(), name='login'),
+    path('login/', LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('logout/', LogoutView.as_view(template_name='registration/logout.html'), name='logout'),
 ]
 if settings.DEBUG:
